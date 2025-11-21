@@ -130,7 +130,7 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: 8489adf5c71f63446a18e9e31f9d23c6,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -0.758
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 8489adf5c71f63446a18e9e31f9d23c6,
         type: 3}
@@ -203,6 +203,14 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 611437237}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 8489adf5c71f63446a18e9e31f9d23c6,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 611437242}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 8489adf5c71f63446a18e9e31f9d23c6,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 611437243}
   m_SourcePrefab: {fileID: 100100000, guid: 8489adf5c71f63446a18e9e31f9d23c6, type: 3}
 --- !u!1 &330585543
 GameObject:
@@ -718,6 +726,35 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 83205744}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &611437242
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 611437236}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1709a506e8bc8ed478145a4b31761282, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _detectDistance: 2
+  _climbLayerMask:
+    serializedVersion: 2
+    m_Bits: 128
+--- !u!114 &611437243
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 611437236}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c260c70513924424cad78291f34f5f06, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  normalCombo: {fileID: 11400000, guid: 8f61a52c1199d5c459cb855df886921a, type: 2}
 --- !u!1 &627902502
 GameObject:
   m_ObjectHideFlags: 0
@@ -732,7 +769,7 @@ GameObject:
   - component: {fileID: 627902503}
   m_Layer: 7
   m_Name: Wall
-  m_TagString: Untagged
+  m_TagString: HighWall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -819,8 +856,8 @@ Transform:
   m_GameObject: {fileID: 627902502}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.09, y: 0.5627891, z: -0.26137412}
-  m_LocalScale: {x: 1, y: 5.5319, z: 11.629035}
+  m_LocalPosition: {x: 1.09, y: 2.11, z: -0.26137412}
+  m_LocalScale: {x: 0.54352, y: 11.584476, z: 11.629035}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -905,6 +942,55 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &871126167
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 871126168}
+  - component: {fileID: 871126169}
+  m_Layer: 0
+  m_Name: PoolManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &871126168
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 871126167}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 3.3122277, y: 1.2275803, z: 0.8676017}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &871126169
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 871126167}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56add79cfc3049f44af99fe7f76ffd0b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemConfigList:
+  - itemName: AttackSound
+    itemPrefab: {fileID: 8356891772944640691, guid: c6815160d7f512c4b93b292cf83bc3ba,
+      type: 3}
+    initItemCount: 10
 --- !u!1 &2060061825
 GameObject:
   m_ObjectHideFlags: 0
@@ -947,3 +1033,4 @@ SceneRoots:
   - {fileID: 2060061826}
   - {fileID: 83205744}
   - {fileID: 627902506}
+  - {fileID: 871126168}

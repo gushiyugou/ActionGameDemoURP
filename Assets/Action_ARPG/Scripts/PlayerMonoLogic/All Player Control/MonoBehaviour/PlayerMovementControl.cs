@@ -30,14 +30,14 @@ namespace Action_ARPG.Movement
         private void CharacterRotationControl()
         {
             // if(!_characterOnGround) return;
-            if (_animator.GetBool("HasInput"))
+            if (_animator.GetBool(AnimationID.HasInputID))
             {
                 _rotationAngle = Mathf.Atan2(GameInputManager.MainInstance.MovementInput.x,
                                      GameInputManager.MainInstance.MovementInput.y) *
                                  Mathf.Rad2Deg+ _mainCamera.eulerAngles.y;
             }
 
-            if (_animator.GetBool("HasInput") && _animator.AnimationAtTag("motion"))
+            if (_animator.GetBool(AnimationID.HasInputID) && _animator.AnimationAtTag("motion"))
             {
                 transform.eulerAngles = Vector3.up * Mathf.SmoothDampAngle(transform.eulerAngles.y,
                     _rotationAngle,ref _rotationVelocity,_smoothDampTime);
@@ -56,23 +56,23 @@ namespace Action_ARPG.Movement
                 // _animator.SetBool("HasInput", false);
                 return;
             }
-            _animator.SetBool("HasInput",GameInputManager.MainInstance.MovementInput != Vector2.zero);
+            _animator.SetBool(AnimationID.HasInputID,GameInputManager.MainInstance.MovementInput != Vector2.zero);
            
-            if (_animator.GetBool("HasInput"))
+            if (_animator.GetBool(AnimationID.HasInputID))
             {
                 if(GameInputManager.MainInstance.Run)
-                    _animator.SetBool("Run",true);
+                    _animator.SetBool(AnimationID.RunID,true);
                 
-                _animator.SetFloat("Movement",(_animator.GetBool("Run")?
+                _animator.SetFloat(AnimationID.MovementID,(_animator.GetBool(AnimationID.RunID)?
                         2f: GameInputManager.MainInstance.MovementInput.sqrMagnitude),
                     0.25f,Time.deltaTime);
             }
             else
             {
-                _animator.SetFloat("Movement",0f, 0.25f,Time.deltaTime);
+                _animator.SetFloat(AnimationID.MovementID,0f, 0.25f,Time.deltaTime);
                 
-                if (_animator.GetFloat("Movement") < 0.2f)
-                    _animator.SetBool("Run",false);
+                if (_animator.GetFloat(AnimationID.MovementID) < 0.2f)
+                    _animator.SetBool(AnimationID.RunID,false);
             }
             
         }

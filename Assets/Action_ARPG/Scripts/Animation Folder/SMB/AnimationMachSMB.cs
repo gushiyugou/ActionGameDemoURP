@@ -11,6 +11,7 @@ public class AnimationMachSMB : StateMachineBehaviour
 
     [SerializeField, Header("是否启用重力")] private bool _isEnableGravity;
     [SerializeField] private float _enableGravityTime;
+    private float enableGravityTimeCount;
 
     private Vector3 _matchPostion;
     private Quaternion _matchRotation;
@@ -18,6 +19,7 @@ public class AnimationMachSMB : StateMachineBehaviour
 
     private void OnEnable()
     {
+        
         GameEventManager.MainInstance.AddEventListening<Vector3,Quaternion>("SetAnimationMatchInfo",GetMatchInfo);
     }
 
@@ -27,10 +29,10 @@ public class AnimationMachSMB : StateMachineBehaviour
     }
 
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
-    //override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
-    //{
-    //    
-    //}
+    override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    {
+        enableGravityTimeCount = _enableGravityTime;
+    }
 
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -50,7 +52,10 @@ public class AnimationMachSMB : StateMachineBehaviour
             if (animator.GetCurrentAnimatorStateInfo(0).normalizedTime > _endTime)
             {
                 //TODO:激活重力
-                GameEventManager.MainInstance.CallEvent("EnableCharacterGravity",true);
+                if(enableGravityTimeCount <= 0)
+                    GameEventManager.MainInstance.CallEvent("EnableCharacterGravity",true);
+                else
+                    enableGravityTimeCount -= Time.deltaTime; 
             }
         }
     }

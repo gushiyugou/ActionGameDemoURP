@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using GGG.Tool;
+using Unity.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -33,7 +34,7 @@ namespace Action_ARPG
         protected float _characterVerticalVelocity;
         protected float _characterVerticalMaxVelocity = 54f;
         protected float _fallOutDeltaTime;
-        protected float _fallOutTime = 0.15f;
+        protected float _fallOutTime = 0.05f;
         protected Vector3 _characterVelocityDerection;
         protected bool _isEnabelGravity;
 
@@ -57,12 +58,12 @@ namespace Action_ARPG
         protected virtual void OnEnable()
         {
             GameEventManager.MainInstance.AddEventListening<bool>("EnableCharacterGravity",EnableCharacterGravity);
-            Debug.Log(1);
         }
 
         protected virtual void OnDisable()
         {
             GameEventManager.MainInstance.RemoveEventListening<bool>("EnableCharacterGravity",EnableCharacterGravity);
+            
         }
 
         protected virtual void Update()
@@ -174,8 +175,20 @@ namespace Action_ARPG
 
        protected void EnableCharacterGravity(bool enable)
        {
+           
            _isEnabelGravity = enable;
-           _characterVerticalVelocity = enable ? -2f : 0;
+           _characterVerticalVelocity = enable ? -9.8f : 0;
+           // float countTime = 1.5f;
+           // while (true)
+           // {
+           //     if (countTime <= 0)
+           //     {
+           //         _characterVerticalVelocity = -9.8f;
+           //         return;
+           //     }
+           //     else
+           //         countTime -= Time.deltaTime;
+           // }
        }
        #endregion
 

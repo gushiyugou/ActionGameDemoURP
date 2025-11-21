@@ -36,10 +36,12 @@ public class PlayerClimbControl : MonoBehaviour
 
         if (GameInputManager.MainInstance.Climb)
         {
+            float differentialDistance = hitInfo.collider.transform.position.y - transform.position.y;
+            float actualDistance = differentialDistance + hitInfo.collider.bounds.extents.y;
             Vector3 position = Vector3.zero;
             var rotation = Quaternion.LookRotation(-hitInfo.normal);
             
-            position.Set(hitInfo.point.x,(hitInfo.collider.bounds.size.y - hitInfo.point.y)+hitInfo.point.y,hitInfo.point.z);
+            position.Set(hitInfo.point.x,actualDistance,hitInfo.point.z);
 
             switch (hitInfo.collider.tag)
             {
@@ -61,6 +63,5 @@ public class PlayerClimbControl : MonoBehaviour
     {
         GameEventManager.MainInstance.CallEvent<Vector3,Quaternion>("SetAnimationMatchInfo",position,rotation);
         GameEventManager.MainInstance.CallEvent<bool>("EnableCharacterGravity",false);
-        Debug.Log(2);
     }
 }

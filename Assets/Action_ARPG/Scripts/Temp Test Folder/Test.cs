@@ -9,7 +9,8 @@ public class Test : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            GameEventManager.MainInstance.CallEvent<float>("改变角色垂直速度",10f);
+            // GameEventManager.MainInstance.CallEvent<float>("改变角色垂直速度",10f);
+            GameObject obj = GamePoolManager.MainInstance.GetItem("Bullet");
         }
     }
 }

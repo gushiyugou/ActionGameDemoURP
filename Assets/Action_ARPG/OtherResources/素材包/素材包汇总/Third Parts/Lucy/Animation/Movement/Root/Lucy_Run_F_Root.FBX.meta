@@ -1,7 +1,7 @@
 fileFormatVersion: 2
 guid: 624de805652622e44958d3b8d48a248f
 ModelImporter:
-  serializedVersion: 21202
+  serializedVersion: 22200
   internalIDToNameTable:
   - first:
       74: -6940667639068230761
@@ -19,10 +19,6 @@ ModelImporter:
     optimizeGameObjects: 0
     removeConstantScaleCurves: 0
     motionNodeName: 
-    rigImportErrors: 
-    rigImportWarnings: "Copied Avatar Rig Configuration mis-match. Bone length in
-      copied configuration does not match position in animation file:\n\t'calf_l'
-      : position error = 6.814420 mm\n\t'calf_r' : position error = 2.763644 mm\n"
     animationImportErrors: 
     animationImportWarnings: "\nClip 'Lucy_Run_F_Root' has import animation warnings
       that might lower retargeting quality:\nNote: Activate translation DOF on avatar
@@ -92,6 +88,7 @@ ModelImporter:
     addColliders: 0
     useSRGBMaterialColor: 1
     sortHierarchyByName: 1
+    importPhysicalCameras: 1
     importVisibility: 1
     importBlendShapes: 1
     importCameras: 1
@@ -119,6 +116,7 @@ ModelImporter:
     secondaryUVMinObjectScale: 1
     secondaryUVPackMargin: 4
     useFileScale: 1
+    strictVertexDataChecks: 0
   tangentSpace:
     normalSmoothAngle: 60
     normalImportMode: 0
@@ -747,7 +745,8 @@ ModelImporter:
     - name: cc_base_r_breast
       parentName: cc_base_r_ribstwist
       position: {x: 0.000000095367426, y: 0.019999694, z: 0.00000045776366}
-      rotation: {x: -0.00000008308777, y: -0.000000049143644, z: 0.00000015646079, w: 1}
+      rotation: {x: -0.00000008308777, y: -0.000000049143644, z: 0.00000015646079,
+        w: 1}
       scale: {x: 1.0000001, y: 1.0000002, z: 1.0000001}
     - name: cc_base_l_breast_root
       parentName: spine_03
@@ -762,7 +761,8 @@ ModelImporter:
     - name: cc_base_l_breast
       parentName: cc_base_l_ribstwist
       position: {x: -0.00000017166137, y: 0.01999981, z: 0.00000030517577}
-      rotation: {x: -0.00000032879504, y: -0.000000033751324, z: -0.00000008195683, w: 1}
+      rotation: {x: -0.00000032879504, y: -0.000000033751324, z: -0.00000008195683,
+        w: 1}
       scale: {x: 1, y: 1.0000001, z: 1.0000001}
     - name: clavicle_r
       parentName: spine_03
@@ -1097,7 +1097,8 @@ ModelImporter:
     - name: Bangs05_End
       parentName: Bangs04
       position: {x: -0.06339698, y: -0.00000030517577, z: 0.000000009536743}
-      rotation: {x: 0.000000040978158, y: -0.00000011920925, z: -0.0000000149011505, w: 1}
+      rotation: {x: 0.000000040978158, y: -0.00000011920925, z: -0.0000000149011505,
+        w: 1}
       scale: {x: 1.0000004, y: 1.0000008, z: 0.9999998}
     - name: Ponytail01
       parentName: head
@@ -1201,12 +1202,15 @@ ModelImporter:
     hasTranslationDoF: 0
     hasExtraRoot: 1
     skeletonHasParents: 1
-  lastHumanDescriptionAvatarSource: {fileID: 9000000, guid: 8489adf5c71f63446a18e9e31f9d23c6, type: 3}
+  lastHumanDescriptionAvatarSource: {fileID: 9000000, guid: 8489adf5c71f63446a18e9e31f9d23c6,
+    type: 3}
   autoGenerateAvatarMappingIfUnspecified: 1
   animationType: 3
   humanoidOversampling: 1
   avatarSetup: 2
   addHumanoidExtraRootOnlyWhenUsingAvatar: 1
+  importBlendShapeDeformPercent: 0
+  remapMaterialsIfMaterialImportModeIsNone: 1
   additionalBone: 0
   userData: 
   assetBundleName: 
