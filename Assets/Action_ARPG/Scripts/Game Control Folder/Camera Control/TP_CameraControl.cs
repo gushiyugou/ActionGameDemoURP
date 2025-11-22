@@ -26,6 +26,12 @@ public class TP_CameraControl : MonoBehaviour
         // _gameInputManager = GetComponent<GameInputManager>();
     }
 
+    private void Start()
+    {
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
+    }
+
     private void Update()
     {
         CameraInput();

@@ -211,6 +211,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 611437243}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 8489adf5c71f63446a18e9e31f9d23c6,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 611437245}
   m_SourcePrefab: {fileID: 100100000, guid: 8489adf5c71f63446a18e9e31f9d23c6, type: 3}
 --- !u!1 &330585543
 GameObject:
@@ -694,6 +698,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 192
   _smoothDampTime: 0.1
+  _slowFootTime: 0.4
+  _fastFootTime: 0.3
 --- !u!143 &611437238
 CharacterController:
   m_ObjectHideFlags: 0
@@ -755,6 +761,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   normalCombo: {fileID: 11400000, guid: 8f61a52c1199d5c459cb855df886921a, type: 2}
+--- !u!114 &611437245
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 611437236}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3aebe3b3061f24b47b70f8b6c7c7a3a6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &627902502
 GameObject:
   m_ObjectHideFlags: 0
@@ -989,6 +1007,18 @@ MonoBehaviour:
   itemConfigList:
   - itemName: AttackSound
     itemPrefab: {fileID: 8356891772944640691, guid: c6815160d7f512c4b93b292cf83bc3ba,
+      type: 3}
+    initItemCount: 10
+  - itemName: HitSound
+    itemPrefab: {fileID: 8356891772944640691, guid: 3364e42446974884a980680088fcffcc,
+      type: 3}
+    initItemCount: 10
+  - itemName: BlockSound
+    itemPrefab: {fileID: 8356891772944640691, guid: b2eb8d06b6a26c741931cbde0c19ebcf,
+      type: 3}
+    initItemCount: 10
+  - itemName: FootStepSound
+    itemPrefab: {fileID: 8356891772944640691, guid: be3400b0aa2224f49b08ad99b8661105,
       type: 3}
     initItemCount: 10
 --- !u!1 &2060061825

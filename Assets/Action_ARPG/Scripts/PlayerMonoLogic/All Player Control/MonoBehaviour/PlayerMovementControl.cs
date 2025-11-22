@@ -13,6 +13,14 @@ namespace Action_ARPG.Movement
         [Header("旋转平滑时间")]
         [SerializeField]private float _smoothDampTime;
         private Transform _mainCamera;
+        
+        //脚步声
+        private float _nextFootTime;
+        [SerializeField] private float _slowFootTime;
+        [SerializeField] private float _fastFootTime;
+        
+        //角色的目标朝向
+        private Vector3 _characterTargetDirectiuon;
 
         protected override void Awake()
         {
@@ -41,8 +49,9 @@ namespace Action_ARPG.Movement
             {
                 transform.eulerAngles = Vector3.up * Mathf.SmoothDampAngle(transform.eulerAngles.y,
                     _rotationAngle,ref _rotationVelocity,_smoothDampTime);
-                
+                _characterTargetDirectiuon = Quaternion.Euler(0, _rotationAngle, 0) * Vector3.forward;
             }
+            _animator.SetFloat(AnimationID.DeltaAngleID,DevelopmentToos.GetDeltaAngle(transform,_characterTargetDirectiuon.normalized));
         }
         
         
@@ -66,6 +75,7 @@ namespace Action_ARPG.Movement
                 _animator.SetFloat(AnimationID.MovementID,(_animator.GetBool(AnimationID.RunID)?
                         2f: GameInputManager.MainInstance.MovementInput.sqrMagnitude),
                     0.25f,Time.deltaTime);
+                SetCharacterFootSound();
             }
             else
             {
@@ -77,6 +87,23 @@ namespace Action_ARPG.Movement
             
         }
 
+        public void SetCharacterFootSound()
+        {
+            if (_characterOnGround && _animator.GetFloat(AnimationID.MovementID) > 0.5f &&
+                _animator.AnimationAtTag("motion"))
+            {
+                _nextFootTime-= Time.deltaTime;
+                if(_nextFootTime < 0) PlayFootStepSound();
+            }
+            else  
+                _nextFootTime = 0f;
+        }
+
+        private void PlayFootStepSound()
+        {
+            GamePoolManager.MainInstance.GetItem("FootStepSound", transform.position, Quaternion.identity);
+            _nextFootTime = _animator.GetFloat(AnimationID.MovementID)>1.1f?_fastFootTime:_slowFootTime;
+        }
         #endregion
     }
 }
