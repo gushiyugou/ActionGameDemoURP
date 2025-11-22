@@ -11,6 +11,7 @@ public class AnimationID
     public static readonly int HasInputID = Animator.StringToHash("HasInput");
     public static readonly int RunID = Animator.StringToHash("Run");
     public static readonly int DeltaAngleID = Animator.StringToHash("DetlaAngle");
+    public static readonly int CanChangeID = Animator.StringToHash("CanChange");
 
 }
     

@@ -5,6 +5,8 @@ using Action_ARPG;
 using Action_ARPG.ComboData;
 using MyAssets.Scripts.Tools;
 using UnityEngine;
+using UnityEngine.Serialization;
+
 
 public class PlayerComboCotrol : MonoBehaviour
 {
@@ -20,6 +22,8 @@ public class PlayerComboCotrol : MonoBehaviour
     private int hitIndex;
     private float maxColdTime;
     private bool canAttackInput;
+
+    public bool canChangeState;
     
     private void Awake()
     {
@@ -35,6 +39,8 @@ public class PlayerComboCotrol : MonoBehaviour
     private void Update()
     {
         CharacterNormalAttack();
+        NormalAttackEnd();
+
     }
 
     #region 角色的基础攻击
@@ -58,6 +64,7 @@ public class PlayerComboCotrol : MonoBehaviour
 
     private void CharacterNormalAttack()
     {
+        
         if(!CanNormalAttackInput()) return;
 
         if (GameInputManager.MainInstance.LAttack)
@@ -70,9 +77,9 @@ public class PlayerComboCotrol : MonoBehaviour
 
             ExecuteComboAction();
         }
+        animator.SetBool(AnimationID.CanChangeID,canChangeState);
     }
-
-
+    
     public void ExecuteComboAction()
     {
         hitIndex = 0;
@@ -82,8 +89,8 @@ public class PlayerComboCotrol : MonoBehaviour
         }
 
         maxColdTime = currentCombo.GetComboColdTime(currentComboActionIndex);
+        canChangeState = false;
         PlayAnimation(currentCombo.GetOneComboAction(currentComboActionIndex));
-        Debug.Log(currentCombo.GetOneComboAction(currentComboActionIndex));
         TimerManager.MainInstance.TryGetOneTimer(maxColdTime,UpdateComboInfo);
         canAttackInput = false;
     }
@@ -99,11 +106,19 @@ public class PlayerComboCotrol : MonoBehaviour
         currentComboActionIndex = 0;
         maxColdTime = 0;
     }
+
+    private void NormalAttackEnd()
+    {
+        if (animator.AnimationAtTag("motion") && canAttackInput)
+            ResetComboInfo();
+    }
     
+    #endregion
+
+    #region 状态的切换
     
 
     #endregion
-
 
     #region 动画相关
 
@@ -112,6 +127,5 @@ public class PlayerComboCotrol : MonoBehaviour
         animator.CrossFadeInFixedTime(animationName,transitTime,layer,fixedTimeOffset);
     }
     
-
     #endregion
 }
