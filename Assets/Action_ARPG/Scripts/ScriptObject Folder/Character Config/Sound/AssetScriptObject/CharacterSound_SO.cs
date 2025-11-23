@@ -30,6 +30,8 @@ public class CharacterSound_SO : ScriptableObject
                 return configSoundsList[2].AudioClips[UnityEngine.Random.Range(0, configSoundsList[2].AudioClips.Length)];
             case SoundType.FootStep:
                 return configSoundsList[3].AudioClips[UnityEngine.Random.Range(0, configSoundsList[3].AudioClips.Length)];
+            case SoundType.IntenfiedAttack:
+                return configSoundsList[4].AudioClips[UnityEngine.Random.Range(0, configSoundsList[4].AudioClips.Length)];
         }
 
         return null;

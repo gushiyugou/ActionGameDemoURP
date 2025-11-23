@@ -103,7 +103,7 @@ namespace Action_ARPG
         #region  ****************重力应用函数****************
 
         protected void CharacterApplyGravity()
-        {
+        {  
             _characterOnGround = GroundDetection();
             if (_characterOnGround)
             {

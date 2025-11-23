@@ -53,3 +53,12 @@ MonoBehaviour:
     AudioClips:
     - {fileID: 8300000, guid: 846d80ad8ce92ba40af09c69d84fb84f, type: 3}
     - {fileID: 8300000, guid: c2bee407312c74c4a95e3cdd33ff6fa3, type: 3}
+  - soundType: 1
+    AudioClips:
+    - {fileID: 8300000, guid: fdbd44c0111305b4eb660edddc1aab07, type: 3}
+  - soundType: 5
+    AudioClips:
+    - {fileID: 8300000, guid: 6985db78d844fae45b293ad5423209ae, type: 3}
+    - {fileID: 8300000, guid: face5d7bb1f23fd41857c5689495b148, type: 3}
+    - {fileID: 8300000, guid: 2619d605033b19649849d8b84f7d5e6f, type: 3}
+    - {fileID: 8300000, guid: 13a04417fb331f2468e0ae57dae1e239, type: 3}

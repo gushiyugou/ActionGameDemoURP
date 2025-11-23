@@ -7,9 +7,12 @@ using UnityEngine;
 public enum SoundType
 {
     Attack,
+    IntenfiedAttack,
     Hit,
     Block,
-    FootStep
+    FootStep,
+    FallSound
+    
 }
 public class PoolItemSound : PoolItemBase
 {

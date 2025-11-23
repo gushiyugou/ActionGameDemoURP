@@ -97,6 +97,95 @@ public class GameEventManager : SingletonNonMono<GameEventManager>
             _action = null;
         }
     }
+    private class EventHelp<T1,T2,T3,T4,T5> : IEventHelp
+    {
+        private event Action<T1,T2,T3,T4,T5> _action;
+
+        public EventHelp(Action<T1,T2,T3,T4,T5> action)
+        {
+            _action = action;
+        }
+
+        public void AddCall(Action<T1,T2,T3,T4,T5> action)
+        {
+            _action += action;
+        }
+
+        public void Call(T1 value1,T2 value2,T3 value3,T4 value4,T5 value5)
+        {
+            _action?.Invoke(value1,value2,value3,value4,value5);
+        }
+
+        public void RemoveCall(Action<T1,T2,T3,T4,T5> action)
+        {
+            _action -= action;
+        }
+
+        public void CleanEvent()
+        {
+            _action = null;
+        }
+    }
+    
+    private class EventHelp<T1,T2,T3,T4> : IEventHelp
+    {
+        private event Action<T1,T2,T3,T4> _action;
+
+        public EventHelp(Action<T1,T2,T3,T4> action)
+        {
+            _action = action;
+        }
+
+        public void AddCall(Action<T1,T2,T3,T4> action)
+        {
+            _action += action;
+        }
+
+        public void Call(T1 value1,T2 value2,T3 value3,T4 value4)
+        {
+            _action?.Invoke(value1,value2,value3,value4);
+        }
+
+        public void RemoveCall(Action<T1,T2,T3,T4> action)
+        {
+            _action -= action;
+        }
+
+        public void CleanEvent()
+        {
+            _action = null;
+        }
+    }
+    
+    private class EventHelp<T1,T2,T3> : IEventHelp
+    {
+        private event Action<T1,T2,T3> _action;
+
+        public EventHelp(Action<T1,T2,T3> action)
+        {
+            _action = action;
+        }
+
+        public void AddCall(Action<T1,T2,T3> action)
+        {
+            _action += action;
+        }
+
+        public void Call(T1 value1,T2 value2,T3 value3)
+        {
+            _action?.Invoke(value1,value2,value3);
+        }
+
+        public void RemoveCall(Action<T1,T2,T3> action)
+        {
+            _action -= action;
+        }
+
+        public void CleanEvent()
+        {
+            _action = null;
+        }
+    }
 
     #endregion
 
@@ -140,6 +229,33 @@ public class GameEventManager : SingletonNonMono<GameEventManager>
             _eventCenter.Add(eventName,new EventHelp<T1,T2>(action));
         
     }
+    
+    public void AddEventListening<T1,T2,T3>(string eventName, Action<T1,T2,T3> action)
+    {
+        if (_eventCenter.TryGetValue(eventName, out IEventHelp e))
+            (e as EventHelp<T1,T2,T3>)?.AddCall(action);
+        else
+            _eventCenter.Add(eventName,new EventHelp<T1,T2,T3>(action));
+        
+    }
+    
+    public void AddEventListening<T1,T2,T3,T4>(string eventName, Action<T1,T2,T3,T4> action)
+    {
+        if (_eventCenter.TryGetValue(eventName, out IEventHelp e))
+            (e as EventHelp<T1,T2,T3,T4>)?.AddCall(action);
+        else
+            _eventCenter.Add(eventName,new EventHelp<T1,T2,T3,T4>(action));
+        
+    }
+    
+    public void AddEventListening<T1,T2,T3,T4,T5>(string eventName, Action<T1,T2,T3,T4,T5> action)
+    {
+        if (_eventCenter.TryGetValue(eventName, out IEventHelp e))
+            (e as EventHelp<T1,T2,T3,T4,T5>)?.AddCall(action);
+        else
+            _eventCenter.Add(eventName,new EventHelp<T1,T2,T3,T4,T5>(action));
+        
+    }
 
     #endregion
     
@@ -161,10 +277,36 @@ public class GameEventManager : SingletonNonMono<GameEventManager>
             Debug.LogWarning($"事件==>{eventName}<==不存在，请注册事件后通知执行");
     }
     
+    
+    
     public void CallEvent<T1,T2>(string eventName, T1 value1,T2 value2)
     {
         if(_eventCenter.TryGetValue(eventName,out IEventHelp e))
             (e as EventHelp<T1,T2>)?.Call(value1, value2);
+        else
+            Debug.LogWarning($"事件==>{eventName}<==不存在，请注册事件后通知执行");
+    }
+    
+    public void CallEvent<T1,T2,T3>(string eventName, T1 value1,T2 value2,T3 value3)
+    {
+        if(_eventCenter.TryGetValue(eventName,out IEventHelp e))
+            (e as EventHelp<T1,T2,T3>)?.Call(value1, value2, value3);
+        else
+            Debug.LogWarning($"事件==>{eventName}<==不存在，请注册事件后通知执行");
+    }
+    
+    public void CallEvent<T1,T2,T3,T4>(string eventName, T1 value1,T2 value2,T3 value3,T4 value4)
+    {
+        if(_eventCenter.TryGetValue(eventName,out IEventHelp e))
+            (e as EventHelp<T1,T2,T3,T4>)?.Call(value1, value2, value3, value4);
+        else
+            Debug.LogWarning($"事件==>{eventName}<==不存在，请注册事件后通知执行");
+    }
+    
+    public void CallEvent<T1,T2,T3,T4,T5>(string eventName, T1 value1,T2 value2,T3 value3,T4 value4,T5 value5)
+    {
+        if(_eventCenter.TryGetValue(eventName,out IEventHelp e))
+            (e as EventHelp<T1,T2,T3,T4,T5>)?.Call(value1, value2, value3, value4, value5);
         else
             Debug.LogWarning($"事件==>{eventName}<==不存在，请注册事件后通知执行");
     }
@@ -193,6 +335,30 @@ public class GameEventManager : SingletonNonMono<GameEventManager>
     {
         if (_eventCenter.TryGetValue(eventName,out var e))
             (e as EventHelp<T1,T2>)?.RemoveCall(action);
+        else
+            Debug.LogWarning($"事件==>{eventName}<==不存在，移除失败");
+    }
+    
+    public void RemoveEventListening<T1,T2,T3>(string eventName,Action<T1,T2,T3> action)
+    {
+        if (_eventCenter.TryGetValue(eventName,out var e))
+            (e as EventHelp<T1,T2,T3>)?.RemoveCall(action);
+        else
+            Debug.LogWarning($"事件==>{eventName}<==不存在，移除失败");
+    }
+    
+    public void RemoveEventListening<T1,T2,T3,T4>(string eventName,Action<T1,T2,T3,T4> action)
+    {
+        if (_eventCenter.TryGetValue(eventName,out var e))
+            (e as EventHelp<T1,T2,T3,T4>)?.RemoveCall(action);
+        else
+            Debug.LogWarning($"事件==>{eventName}<==不存在，移除失败");
+    }
+    
+    public void RemoveEventListening<T1,T2,T3,T4,T5>(string eventName,Action<T1,T2,T3,T4,T5> action)
+    {
+        if (_eventCenter.TryGetValue(eventName,out var e))
+            (e as EventHelp<T1,T2,T3,T4,T5>)?.RemoveCall(action);
         else
             Debug.LogWarning($"事件==>{eventName}<==不存在，移除失败");
     }

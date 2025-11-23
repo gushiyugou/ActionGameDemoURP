@@ -7,11 +7,11 @@ namespace Action_ARPG.Event
 {
     public class AnimationEvent : MonoBehaviour
     {
-        private PlayerComboCotrol playerComboCotrol;
+        private PlayerComboControl _playerComboControl;
 
         private void Awake()
         {
-            playerComboCotrol = GetComponentInParent<PlayerComboCotrol>();
+            _playerComboControl = GetComponentInParent<PlayerComboControl>();
         }
 
         private void PlaySound(string name)
@@ -22,7 +22,7 @@ namespace Action_ARPG.Event
 
         private void CanChange()
         {
-            playerComboCotrol.canChangeState = true;
+            _playerComboControl.canChangeState = true;
         }
     }
 }
