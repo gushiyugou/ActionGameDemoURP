@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using GGG.Tool;
 using UnityEngine;
 
 namespace Action_ARPG.Health
@@ -30,6 +31,11 @@ namespace Action_ARPG.Health
             GameEventManager.MainInstance.RemoveEventListening<float,string,string,Transform,Transform>("HitEvent",OnChanracterHitEventHandler);
         }
 
+        protected virtual void Update()
+        {
+            // OnHitLookAttacker();
+        }
+
         protected virtual void CharacterHitAction(float damage,string hitName, string parryName)
         {
             
@@ -50,12 +56,22 @@ namespace Action_ARPG.Health
                 currentAttacker = attacker;
         }
 
+        private void OnHitLookAttacker()
+        {
+            if(currentAttacker == null )return;
+            if ((animator.AnimationAtTag("Hit") || animator.AnimationAtTag("Parry")) &&
+                animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 0.5f)
+            {
+                transform.Look(currentAttacker.position,50f);
+            }
+        }
+
         private void OnChanracterHitEventHandler(float damage, string hitName, string parryName, Transform attacker,
             Transform self)
         {
             if(self != transform) return;
 
-
+            
             SetAttacker(attacker);
             CharacterHitAction(damage,hitName, parryName);
             TakeDamage(damage);

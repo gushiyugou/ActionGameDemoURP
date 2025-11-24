@@ -32,6 +32,8 @@ public class CharacterSound_SO : ScriptableObject
                 return configSoundsList[3].AudioClips[UnityEngine.Random.Range(0, configSoundsList[3].AudioClips.Length)];
             case SoundType.IntenfiedAttack:
                 return configSoundsList[4].AudioClips[UnityEngine.Random.Range(0, configSoundsList[4].AudioClips.Length)];
+            case SoundType.FallSound:
+                return configSoundsList[5].AudioClips[UnityEngine.Random.Range(0, configSoundsList[5].AudioClips.Length)];
         }
 
         return null;
