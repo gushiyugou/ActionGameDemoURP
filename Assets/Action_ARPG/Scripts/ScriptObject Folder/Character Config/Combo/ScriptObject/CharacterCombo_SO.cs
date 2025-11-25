@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Action_ARPG.ComboData
@@ -15,10 +16,18 @@ namespace Action_ARPG.ComboData
         /// <returns></returns>
         public string GetOneComboAction(int index)
         {
-            if (_comboList.Count == 0 || index > _comboList.Count || index < 0) return null;
+           
+            if (_comboList.Count == 0) return null;
+            index = Mathf.Clamp(index,0,_comboList.Count-1);
             return _comboList[index].AnimationName;
         }
 
+        public string GetEndActionName(int index)
+        {
+            if (_comboList.Count == 0) return null;
+            index = Mathf.Clamp(index,0,_comboList.Count-1);
+            return _comboList[index].EndAnimationName;
+        }
         /// <summary>
         /// 获取对应的受伤动画
         /// </summary>
@@ -27,10 +36,10 @@ namespace Action_ARPG.ComboData
         /// <returns></returns>
         public string GetHitName(int index, int hitIndex)
         {
-            if (_comboList.Count == 0 || index > _comboList.Count || index < 0) return null;
-            if (_comboList[index].GetComboHitMaxCount() == 0 || hitIndex > _comboList[index].GetComboHitMaxCount() ||
-                hitIndex < 0) return null;
-            
+            if (_comboList.Count == 0) return null;
+            index = Mathf.Clamp(index,0,_comboList.Count-1);
+            if (_comboList[index].GetComboHitMaxCount() == 0) return null;
+            index = Mathf.Clamp(hitIndex,0,_comboList[index].GetComboHitMaxCount() -1);
             return _comboList[index].ComboHitName[hitIndex];
         }
         
@@ -42,31 +51,56 @@ namespace Action_ARPG.ComboData
         /// <returns></returns>
         public string GetParryName(int index, int hitIndex)
         {
-            if (_comboList.Count == 0 || index > _comboList.Count || index < 0) return null;
-            if (_comboList[index].GetComboParryMaxCount() == 0 || hitIndex > _comboList[index].GetComboParryMaxCount() ||
-                hitIndex < 0) return null;
+            if (_comboList.Count == 0) return null;
+            index = Mathf.Clamp(index,0,_comboList.Count-1);
+            if (_comboList[index].GetComboParryMaxCount() == 0 ) return null;
+            hitIndex = Mathf.Clamp(hitIndex,0, _comboList[index].GetComboParryMaxCount() -1);
             
             return _comboList[index].ComboParryName[hitIndex];
         }
 
         public float GetComboDamage(int index)
         {
-            if (_comboList.Count == 0 || index > _comboList.Count || index < 0) return 0f;
-
+            if (_comboList.Count == 0) return 0f;
+            index = Mathf.Clamp(index,0,_comboList.Count-1);
             return _comboList[index].ComboDamage;
         }
 
 
         public float GetComboColdTime(int index)
         {
-            if (_comboList.Count == 0 || index > _comboList.Count || index < 0) return 0f;
-
+            if (_comboList.Count == 0) return 0f;
+            index = Mathf.Clamp(index,0,_comboList.Count-1);
             return _comboList[index].ComboColdTime;
         }
+
+        public float GetComboPositionOffset(int index)
+        {
+            if (_comboList.Count == 0) return 0f;
+            index = Mathf.Clamp(index,0,_comboList.Count-1);
+            return _comboList[index].ComboPositionOffset;
+        }
+
+        public int GetComboHitMaxCount(int index)
+        {
+            if(index >= _comboList.Count) index = _comboList.Count -1;
+            if (index < 0) index = 0;
+            if (_comboList.Count == 0 || index >= _comboList.Count || index < 0) return 0;
+            index = Mathf.Clamp(index,0,_comboList.Count-1);
+            return _comboList[index].GetComboHitMaxCount();
+        }
         
-        public int GetComboHitMaxCount(int index)=> _comboList[index].GetComboHitMaxCount();
-        public int GetComboParryMaxCount(int index) => _comboList[index].GetComboParryMaxCount();
+        
+        public int GetComboParryMaxCount(int index)
+        {
+            // index = Mathf.Clamp(index,0,_comboList.Count-1);
+            return _comboList[index].GetComboParryMaxCount();
+        }
+        // public int GetComboHitMaxCount(int index) => _comboList[index].GetComboHitMaxCount();
+        // public int GetComboParryMaxCount(int index) =>_comboList[index].GetComboParryMaxCount();
         public int GetComboMaxCount() => _comboList.Count;
+        
+        
     }
     
     

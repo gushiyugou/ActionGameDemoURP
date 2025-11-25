@@ -20,6 +20,8 @@ public class PlayerComboControl : MonoBehaviour
     private Transform currentEnemy;
     [SerializeField,Header("普通攻击连招表")] private CharacterCombo_SO normalCombo;
     [SerializeField,Header("强化攻击连招表")] private CharacterCombo_SO intensifiedAttack;
+    [SerializeField,Header("特殊技能表")] private CharacterCombo_SO specialAttack;
+    [SerializeField,Header("暗杀技能表")] private CharacterCombo_SO assassinateAttack;
     [SerializeField,Header("攻击时方向旋转速度")] float rotationVelocity;
     private CharacterCombo_SO currentCombo;
     
@@ -29,6 +31,10 @@ public class PlayerComboControl : MonoBehaviour
     private int currentAttackNumber;
     private float maxColdTime;
     private bool canAttackInput;
+    private bool isCanIntensifiedAttack = false;
+    
+    
+    private int specialAttackIndex;
      
 
     //技能状态标识
@@ -55,10 +61,22 @@ public class PlayerComboControl : MonoBehaviour
 
     private void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            for (int i = 0; i < normalCombo.GetComboMaxCount(); i++)
+            {
+                Debug.Log(normalCombo.GetOneComboAction(i));
+            }
+        }
         UpdateDetectionDirection();
         CharacterNormalAttack();
+        SpecialAttackInput();
+        AssassinateAttackInput();
         NormalAttackEnd();
+        MatchPosition();
         LookTargetOnAttack();
+        UpdateEndAnimation();
+
     }
 
     private void FixedUpdate()
@@ -67,6 +85,46 @@ public class PlayerComboControl : MonoBehaviour
         AttackCheckTag();
     }
 
+
+    #region 位置同步
+
+    private void MatchPosition()
+    {
+        if(currentEnemy == null ) return;
+        if (!animator) return;
+        if (animator.AnimationAtTag("Finish") && !animator.IsInTransition(0))
+        {
+            // transform.Look(currentEnemy.position,500f);
+            // currentEnemy.Look(transform.position,500f);
+            // transform.position = currentEnemy.position;
+            transform.rotation = Quaternion.LookRotation(-currentEnemy.forward);
+            RuningMatchPosition(specialAttack,specialAttackIndex);    
+        }else if(animator.AnimationAtTag("Assassinate"))
+        {
+            transform.rotation = Quaternion.LookRotation(currentEnemy.forward);
+            RuningMatchPosition(assassinateAttack,specialAttackIndex, 0f,0.25f);
+        }
+        
+    }
+    /// <summary>
+    /// 动画匹配位置同步
+    /// </summary>
+    private void RuningMatchPosition(CharacterCombo_SO comboSO,int index,float startTime = 0f,float endTime = 0.15f)
+    {
+        if (!animator.isMatchingTarget && !animator.IsInTransition(0))
+        {
+            //animator.IsInTransition(0)判断当前动画是否处于过度状态
+            //animator.IsMatchingTarget判断当前动画是否处于匹配状态
+            //动画匹配函数：MatchTarget:参数：匹配的目标位置、匹配的目标旋转、匹配的部位、权重掩码、开始时间、结束时间
+            animator.MatchTarget(currentEnemy.position+(-transform.forward*comboSO.GetComboPositionOffset(index)),
+                Quaternion.identity, AvatarTarget.Body,
+                new MatchTargetWeightMask(Vector3.one,0f),startTime,endTime
+            );
+        }
+        
+    }
+
+    #endregion
 
     #region AttackCheck
 
@@ -82,7 +140,6 @@ public class PlayerComboControl : MonoBehaviour
         if(currentEnemy==null) return;
         if(Vector3.Dot(transform.forward,DevelopmentToos.DirectionForTarget(transform,currentEnemy)) <0.85f) return;
         if (DevelopmentToos.DistanceForTarget(currentEnemy,transform) >1.3f) return;
-        Debug.Log("攻击伤害触发");
         if (animator.AnimationAtTag("Attack"))
         {
             GameEventManager.MainInstance.CallEvent("HitEvent",currentCombo.GetComboDamage(currentComboActionIndex),
@@ -93,6 +150,7 @@ public class PlayerComboControl : MonoBehaviour
         else
         {
             //一般攻击状态下，而是其他带有特殊效果的动作
+            GameEventManager.MainInstance.CallEvent<float,Transform>("CalculateDamage",specialAttack.GetComboDamage(specialAttackIndex),currentEnemy);
         }
         
     }
@@ -104,7 +162,6 @@ public class PlayerComboControl : MonoBehaviour
                 detectionRange, detectionDirection, out var hitInfo,
                 detectionDistance, 1<<9, QueryTriggerInteraction.Ignore))
         {
-            Debug.Log(0);
             currentEnemy = hitInfo.transform; 
         }
     }
@@ -168,6 +225,7 @@ public class PlayerComboControl : MonoBehaviour
         }
         else if (GameInputManager.MainInstance.RAttack)
         {
+            isCanIntensifiedAttack = true;
             if (currentAttackNumber >= 3)
             {
                 
@@ -207,8 +265,7 @@ public class PlayerComboControl : MonoBehaviour
         //判断当前攻击状态是否是普通连招
         currentAttackNumber += (currentCombo == normalCombo) ? 1 : 0;
         hitIndex = 0;
-        currentComboActionIndex++;
-        if (currentComboActionIndex == currentCombo.GetComboMaxCount())
+        if (currentComboActionIndex == currentCombo.GetComboMaxCount() || currentComboActionIndex < 0)
         {
             currentComboActionIndex = 0;
         }
@@ -216,13 +273,15 @@ public class PlayerComboControl : MonoBehaviour
         maxColdTime = currentCombo.GetComboColdTime(currentComboActionIndex);
         canChangeState = false;
         PlayAnimation(currentCombo.GetOneComboAction(currentComboActionIndex));
+        
         TimerManager.MainInstance.TryGetOneTimer(maxColdTime,UpdateComboInfo);
         canAttackInput = false;
+        isCanIntensifiedAttack = false;
     }
 
     private void UpdateComboInfo()
     {
-        
+        currentComboActionIndex++;
         maxColdTime = 0f;
         canAttackInput = true;
     }
@@ -234,8 +293,12 @@ public class PlayerComboControl : MonoBehaviour
 
     private void NormalAttackEnd()
     {
-        if (animator.AnimationAtTag("motion")&& canAttackInput)
+        if (animator.AnimationAtTag("motion") && canAttackInput)
+        {
+            currentAttackNumber = 0;
             ResetComboInfo();
+        }
+            
     }
     
     private void ChangeCurrentCombo(CharacterCombo_SO comboSO)
@@ -250,22 +313,43 @@ public class PlayerComboControl : MonoBehaviour
     
     private void LookTargetOnAttack()
     {
+        
         if (animator.AnimationAtTag("Attack") && animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 0.5 && currentEnemy != null)
         {
-            transform.Look(currentEnemy.position,50f);
+            if(Vector3.Distance(transform.position,currentEnemy.position) > 3f) return;
+            transform.Look(currentEnemy.position,500f);
+            // animator.MatchTarget(currentEnemy.position+(currentEnemy.forward*normalCombo.GetComboPositionOffset(currentComboActionIndex))
+            //     ,Quaternion.identity,AvatarTarget.Body,new MatchTargetWeightMask(Vector3.one,0f),0,0.15f);
             // transform.rotation = Quaternion.LookRotation(currentEnemy.position);
         }
            
     }
+
+
+    #region 结束动画播放判断
+
+    private void UpdateEndAnimation()
+    {
+        if(GameInputManager.MainInstance.MovementInput != Vector2.zero || currentCombo.GetEndActionName(currentComboActionIndex) == "") return;
+        if(currentComboActionIndex > currentCombo.GetComboMaxCount()) return;
+        if(GameInputManager.MainInstance.LAttack || GameInputManager.MainInstance.RAttack) return;
+        if (animator.AnimationAtTag("Attack") && animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f)
+        {
+            //PlayAnimation(currentCombo.GetEndActionName(currentComboActionIndex));
+            animator.Play(currentCombo.GetEndActionName(currentComboActionIndex),0,0.0f);
+        }
+    }
+
+
+    #endregion
 
     #region 更新受伤索引
 
     private void UpdateHitIndex()
     {
         hitIndex++;
-        if (hitIndex >= currentCombo.GetComboHitMaxCount(currentComboActionIndex))
+        if (hitIndex == currentCombo.GetComboHitMaxCount(currentComboActionIndex))
             hitIndex = 0;
-        
     }
     
 
@@ -282,8 +366,65 @@ public class PlayerComboControl : MonoBehaviour
 
         return true;
     }
+
+    private void SpecialAttackInput()
+    {
+        //判断当前是否可执行特殊攻击
+        if(!AllowSpecialAttack()) return;
+        //执行特殊攻击逻辑
+        if (GameInputManager.MainInstance.Grab && !animator.AnimationAtTag("Finish") && !animator.AnimationAtTag("Assassinate"))
+        {
+            //播放特殊必中攻击动画
+            specialAttackIndex = Random.Range(0, specialAttack.GetComboMaxCount());
+            PlayAnimation(specialAttack.GetOneComboAction(specialAttackIndex));
+            //执行敌人的特殊攻击受伤逻辑
+            GameEventManager.MainInstance.CallEvent<string,string,Transform,Transform>("SpacialAttackHitEvent",specialAttack.GetHitName(specialAttackIndex,0),
+                specialAttack.GetParryName(specialAttackIndex,0),transform,currentEnemy);
+            TimerManager.MainInstance.TryGetOneTimer(0.155f,UpdateComboInfo);
+            ResetComboInfo();
+        }
+    }
+    
     
     #endregion
+    
+    #region 暗杀攻击逻辑
+
+    private bool AllowAssassinateAttack()
+    {
+        //1.距离太原
+        //2.当前没有目标
+        //3.当前正处于暗杀状态下
+        //4.角度太太
+        if (currentEnemy == null) return false;
+        if(animator.AnimationAtTag("Assassinate")) return false;
+        if(animator.AnimationAtTag("Finish")) return false;
+        if (Vector3.Distance(transform.position, currentEnemy.position) > 5f) return false;
+        if (Vector3.Angle(transform.position, currentEnemy.position) > 30f) return false;
+
+        return true;
+    }
+    
+    private void AssassinateAttackInput()
+    {
+        if(!AllowAssassinateAttack()) return;
+
+        if (GameInputManager.MainInstance.TakeOut && !animator.AnimationAtTag("Finish")
+            && !animator.AnimationAtTag("Assassinate"))
+        {
+            specialAttackIndex = Random.Range(0, assassinateAttack.GetComboMaxCount());
+            PlayAnimation(assassinateAttack.GetOneComboAction(specialAttackIndex));
+            //执行敌人的特殊攻击受伤逻辑
+            GameEventManager.MainInstance.CallEvent<string,string,Transform,Transform>("SpacialAttackHitEvent",assassinateAttack.GetHitName(currentComboActionIndex,0),
+                specialAttack.GetParryName(currentComboActionIndex,0),transform,currentEnemy);
+            TimerManager.MainInstance.TryGetOneTimer(0.5f,UpdateComboInfo);
+            ResetComboInfo();
+            currentComboActionIndex = 0;
+        }
+    }
+    
+    #endregion
+    
     
     #region 状态的切换
     

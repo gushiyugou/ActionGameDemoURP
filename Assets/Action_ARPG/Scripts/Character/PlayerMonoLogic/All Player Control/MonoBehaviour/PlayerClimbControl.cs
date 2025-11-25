@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using MyAssets.Scripts.Tools;
 using UnityEngine;
 
 public class PlayerClimbControl : MonoBehaviour
@@ -34,7 +35,7 @@ public class PlayerClimbControl : MonoBehaviour
     {
         if(!IsCanClimb()) return;
 
-        if (GameInputManager.MainInstance.Climb)
+        if (GameInputManager.MainInstance.Climb && !_animator.AnimationAtTag("Climb"))
         {
             float differentialDistance = hitInfo.collider.transform.position.y - transform.position.y;
             float actualDistance = differentialDistance + hitInfo.collider.bounds.extents.y;

@@ -16,14 +16,16 @@ namespace Action_ARPG.ComboData
         [SerializeField] private float comboDamage;
         [SerializeField] private float comboColdTime;
         [SerializeField] private float comboPositionOffset;
-        
-        
+        [SerializeField] private string endAnimationName;
+
+
         public string AnimationName => animationName;
         public string[] ComboHitName => comboHitName;
         public string[] ComboParryName => comboParryName;
         public float ComboDamage => comboDamage;
         public float ComboColdTime => comboColdTime;
         public float ComboPositionOffset => comboPositionOffset;
+        public string EndAnimationName => endAnimationName;
 
         /// <summary>
         /// 获取当前连招击中伤害的最大数量

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using GGG.Tool;
@@ -53,8 +54,17 @@ namespace Action_ARPG.Movement
             }
             _animator.SetFloat(AnimationID.DeltaAngleID,DevelopmentToos.GetDeltaAngle(transform,_characterTargetDirectiuon.normalized));
         }
-        
-        
+
+        private void OnControllerColliderHit(ControllerColliderHit hit)
+        {
+            Rigidbody rig;
+            if (hit.transform.TryGetComponent(out rig))
+            {
+                rig.AddForce(transform.forward*20f,ForceMode.Force);
+            }
+        }
+
+
         #region 动画相关
 
         private void UpdateAnimation()

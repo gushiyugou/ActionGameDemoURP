@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bffcff00ef2b41b8999f43e04f5a149e, type: 3}
+  m_Name: AnbiIntenfiedAttackComboData
+  m_EditorClassIdentifier: 
+  _comboList:
+  - {fileID: 11400000, guid: d4854f7c3c4f2fb448c9a39f6b19a9e7, type: 2}
+  - {fileID: 11400000, guid: c2d73134a0438814d9c4f639bce42e8c, type: 2}
+  - {fileID: 11400000, guid: 26c2aee52e5497b49856b7ec80f77f7d, type: 2}

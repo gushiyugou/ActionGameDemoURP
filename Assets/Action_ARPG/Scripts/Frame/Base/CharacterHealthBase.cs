@@ -24,11 +24,15 @@ namespace Action_ARPG.Health
         protected virtual void OnEnable()
         {
             GameEventManager.MainInstance.AddEventListening<float,string,string,Transform,Transform>("HitEvent",OnChanracterHitEventHandler);
+            GameEventManager.MainInstance.AddEventListening<string,string,Transform,Transform>("SpacialAttackHitEvent",SpacialAttackHitEventHandler);
+            GameEventManager.MainInstance.AddEventListening<float,Transform>("CalculateDamage",SpacialAttackTakeDamage);
         }
 
         protected virtual void OnDisable()
         {
             GameEventManager.MainInstance.RemoveEventListening<float,string,string,Transform,Transform>("HitEvent",OnChanracterHitEventHandler);
+            GameEventManager.MainInstance.RemoveEventListening<string,string,Transform,Transform>("SpacialAttackHitEvent",SpacialAttackHitEventHandler);
+            GameEventManager.MainInstance.RemoveEventListening<float,Transform>("CalculateDamage",SpacialAttackTakeDamage);
         }
 
         protected virtual void Update()
@@ -36,7 +40,19 @@ namespace Action_ARPG.Health
             // OnHitLookAttacker();
         }
 
+        
+        /// <summary>
+        /// 敌人的受伤动画存在差异性，所以声明为虚方法，由子类去实现具体的受伤逻辑
+        /// </summary>
+        /// <param name="damage">伤害值</param>
+        /// <param name="hitName">受伤动画名</param>
+        /// <param name="parryName">格挡动画名</param>
         protected virtual void CharacterHitAction(float damage,string hitName, string parryName)
+        {
+            
+        }
+        
+        protected virtual void SpacialAttackHitAction(string hitName, string parryName)
         {
             
         }
@@ -44,6 +60,14 @@ namespace Action_ARPG.Health
         protected void TakeDamage(float damage)
         {
             
+        }
+
+        protected void SpacialAttackTakeDamage(float damage, Transform self)
+        {
+            if(self!= transform) return;
+            
+            TakeDamage(damage);
+            GamePoolManager.MainInstance.GetItem("HitSound",transform.position, Quaternion.identity);
         }
         
         /// <summary>
@@ -66,6 +90,7 @@ namespace Action_ARPG.Health
             }
         }
 
+        #region 受伤事件
         private void OnChanracterHitEventHandler(float damage, string hitName, string parryName, Transform attacker,
             Transform self)
         {
@@ -76,6 +101,21 @@ namespace Action_ARPG.Health
             CharacterHitAction(damage,hitName, parryName);
             TakeDamage(damage);
         }
+        
+        private void SpacialAttackHitEventHandler(string hitName, string parryName, Transform attacker,
+            Transform self)
+        {
+            SetAttacker(attacker);
+            // SpacialAttackHitAction(damage,hitName, parryName);
+            animator.Play(hitName);
+            // SpacialAttackTakeDamage(damage);
+            
+        }
+         
+        #endregion
+        
+        
+        
        
     }
 }

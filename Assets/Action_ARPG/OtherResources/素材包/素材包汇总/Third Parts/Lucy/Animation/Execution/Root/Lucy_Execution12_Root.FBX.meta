@@ -84,15 +84,15 @@ ModelImporter:
       curves: []
       events:
       - time: 0.1815848
-        functionName: PlaySound
+        functionName: AttackTrigger
         data: IntenfiedAttackSound
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
       - time: 0.29765743
-        functionName: PlaySound
-        data: IntenfiedAttackSound
+        functionName: AttackTrigger
+        data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
