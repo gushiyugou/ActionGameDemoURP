@@ -4821,7 +4821,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f35820a952a4b484b94d48f7c6460313, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enduranceValue: 100
+  healthInfo: {fileID: 11400000, guid: 2566495d43687a8499ffcad472c66158, type: 2}
 --- !u!1 &3151310734278744214
 GameObject:
   m_ObjectHideFlags: 0

@@ -6,7 +6,7 @@ using System.Linq;
 using GGG.Tool;
 using GGG.Tool.Singleton;
 
-public class GamePoolManager : Singleton<GamePoolManager>
+public class GamePoolManager : Singletons<GamePoolManager>
 {
     [Serializable]
     public class PoolItem

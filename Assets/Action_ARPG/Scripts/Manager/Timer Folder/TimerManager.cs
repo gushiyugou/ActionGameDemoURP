@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using GGG.Tool.Singleton;
 using UnityEngine;
 using System.Collections.Generic;
@@ -8,7 +8,7 @@ using UnityEngine.PlayerLoop;
 
 namespace Action_ARPG
 {
-    public class TimerManager : Singleton<TimerManager>
+    public class TimerManager : Singletons<TimerManager>
     {
         [SerializeField] private int _initMaxTimerCount;
         

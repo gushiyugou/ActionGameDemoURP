@@ -39,7 +39,7 @@ namespace Action_ARPG.ComboData
             if (_comboList.Count == 0) return null;
             index = Mathf.Clamp(index,0,_comboList.Count-1);
             if (_comboList[index].GetComboHitMaxCount() == 0) return null;
-            index = Mathf.Clamp(hitIndex,0,_comboList[index].GetComboHitMaxCount() -1);
+            hitIndex = Mathf.Clamp(hitIndex,0,_comboList[index].GetComboHitMaxCount() -1);
             return _comboList[index].ComboHitName[hitIndex];
         }
         

@@ -3,7 +3,47 @@ guid: 929fe528857617c40bb64277730e8726
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: MI_5XingStar
+    second: {fileID: 2100000, guid: 27976c319478e4248a60ffe8659235c3, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: MI_R2T1ChangLiMd10011Bangs
+    second: {fileID: 2100000, guid: 1b80dced6dc3abd409b3749a186e16a8, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: MI_R2T1ChangLiMd10011Cloth
+    second: {fileID: 2100000, guid: 6732f31a4e0fca74089b33c13ba211b5, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: MI_R2T1ChangLiMd10011Down
+    second: {fileID: 2100000, guid: 2351be48b8999fc4099eb00c765a0ab0, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: MI_R2T1ChangLiMd10011Eye
+    second: {fileID: 2100000, guid: 7a3dd0557e44fd34cb6c014f1f08285a, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: MI_R2T1ChangLiMd10011Face
+    second: {fileID: 2100000, guid: 0a5c3ad2e7328e741ac3454e2a700fd4, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: MI_R2T1ChangLiMd10011Hair
+    second: {fileID: 2100000, guid: 4068527cdb96bd642a2f398aec4ccd2f, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: MI_R2T1ChangLiMd10011Up
+    second: {fileID: 2100000, guid: 19fd4d514c55b8c4f81b2e75e0e84fc7, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
@@ -16,8 +56,6 @@ ModelImporter:
     optimizeGameObjects: 0
     removeConstantScaleCurves: 0
     motionNodeName: 
-    rigImportErrors: 
-    rigImportWarnings: 
     animationImportErrors: 
     animationImportWarnings: "\nClip 'R2T1ChangLiMd10011.ao|AirAttack_End' has import
       animation warnings that might lower retargeting quality:\nNote: Activate translation

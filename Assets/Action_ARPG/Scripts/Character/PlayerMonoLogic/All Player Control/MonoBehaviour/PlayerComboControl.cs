@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Action_ARPG;
 using Action_ARPG.ComboData;
 using GGG.Tool;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -17,12 +18,13 @@ public class PlayerComboControl : MonoBehaviour
      */
     private Animator animator;
     private Transform cameraGameObject;
-    private Transform currentEnemy;
+    private Transform currentAttackLockTarget;
     [SerializeField,Header("普通攻击连招表")] private CharacterCombo_SO normalCombo;
     [SerializeField,Header("强化攻击连招表")] private CharacterCombo_SO intensifiedAttack;
     [SerializeField,Header("特殊技能表")] private CharacterCombo_SO specialAttack;
     [SerializeField,Header("暗杀技能表")] private CharacterCombo_SO assassinateAttack;
     [SerializeField,Header("攻击时方向旋转速度")] float rotationVelocity;
+    [SerializeField,Header("旋转的模型")] Transform rotationModel;
     private CharacterCombo_SO currentCombo;
     
 
@@ -32,9 +34,11 @@ public class PlayerComboControl : MonoBehaviour
     private float maxColdTime;
     private bool canAttackInput;
     private bool isCanIntensifiedAttack = false;
-    
-    
+    private Collider[] attackUnits;
+
+
     private int specialAttackIndex;
+    private bool canFinishAttack;
      
 
     //技能状态标识
@@ -44,6 +48,8 @@ public class PlayerComboControl : MonoBehaviour
     private Vector3 detectionDirection;
     [SerializeField,Header("攻击检测相关参数")] private float detectionRange;
     [SerializeField] private float detectionDistance;
+    [SerializeField] private float centerDetectionRadius;
+    [SerializeField] private LayerMask detectionLayer;
 
     
     
@@ -57,6 +63,17 @@ public class PlayerComboControl : MonoBehaviour
     {
         canAttackInput = true;
         currentCombo = normalCombo;
+        canFinishAttack = false;
+    }
+
+    private void OnEnable()
+    {
+        GameEventManager.MainInstance.AddEventListening<bool>("ActiveSpecialEvent",EnableFinishAttack);
+    }
+
+    private void OnDisable()
+    {
+        GameEventManager.MainInstance.RemoveEventListening<bool>("ActiveSpecialEvent",EnableFinishAttack);
     }
 
     private void Update()
@@ -68,21 +85,26 @@ public class PlayerComboControl : MonoBehaviour
                 Debug.Log(normalCombo.GetOneComboAction(i));
             }
         }
-        UpdateDetectionDirection();
+        // UpdateDetectionDirection();
+        LookTargetOnAttack();
+        GetOneAttackUnit();
         CharacterNormalAttack();
         SpecialAttackInput();
         AssassinateAttackInput();
         NormalAttackEnd();
         MatchPosition();
-        LookTargetOnAttack();
+        
         UpdateEndAnimation();
+
+        // ClearCurrentEnemy();
 
     }
 
     private void FixedUpdate()
     {
         
-        AttackCheckTag();
+        // AttackCheckTag();
+        GetNearAllAttackUnit();
     }
 
 
@@ -90,18 +112,18 @@ public class PlayerComboControl : MonoBehaviour
 
     private void MatchPosition()
     {
-        if(currentEnemy == null ) return;
+        if(currentAttackLockTarget == null ) return;
         if (!animator) return;
         if (animator.AnimationAtTag("Finish") && !animator.IsInTransition(0))
         {
             // transform.Look(currentEnemy.position,500f);
             // currentEnemy.Look(transform.position,500f);
             // transform.position = currentEnemy.position;
-            transform.rotation = Quaternion.LookRotation(-currentEnemy.forward);
+            transform.rotation = Quaternion.LookRotation(-currentAttackLockTarget.forward);
             RuningMatchPosition(specialAttack,specialAttackIndex);    
         }else if(animator.AnimationAtTag("Assassinate"))
         {
-            transform.rotation = Quaternion.LookRotation(currentEnemy.forward);
+            transform.rotation = Quaternion.LookRotation(currentAttackLockTarget.forward);
             RuningMatchPosition(assassinateAttack,specialAttackIndex, 0f,0.25f);
         }
         
@@ -116,7 +138,7 @@ public class PlayerComboControl : MonoBehaviour
             //animator.IsInTransition(0)判断当前动画是否处于过度状态
             //animator.IsMatchingTarget判断当前动画是否处于匹配状态
             //动画匹配函数：MatchTarget:参数：匹配的目标位置、匹配的目标旋转、匹配的部位、权重掩码、开始时间、结束时间
-            animator.MatchTarget(currentEnemy.position+(-transform.forward*comboSO.GetComboPositionOffset(index)),
+            animator.MatchTarget(currentAttackLockTarget.position+(-transform.forward*comboSO.GetComboPositionOffset(index)),
                 Quaternion.identity, AvatarTarget.Body,
                 new MatchTargetWeightMask(Vector3.one,0f),startTime,endTime
             );
@@ -137,20 +159,20 @@ public class PlayerComboControl : MonoBehaviour
 
     private void TriggerDamage()
     {
-        if(currentEnemy==null) return;
-        if(Vector3.Dot(transform.forward,DevelopmentToos.DirectionForTarget(transform,currentEnemy)) <0.85f) return;
-        if (DevelopmentToos.DistanceForTarget(currentEnemy,transform) >1.3f) return;
+        if(currentAttackLockTarget==null) return;
+        if(Vector3.Dot(transform.forward,DevelopmentToos.DirectionForTarget(transform,currentAttackLockTarget)) <0.85f) return;
+        if (DevelopmentToos.DistanceForTarget(currentAttackLockTarget,transform) >1.3f) return;
         if (animator.AnimationAtTag("Attack"))
         {
-            GameEventManager.MainInstance.CallEvent("HitEvent",currentCombo.GetComboDamage(currentComboActionIndex),
+            GameEventManager.MainInstance.CallEvent<float,string,string,Transform,Transform>("HitEvent",currentCombo.GetComboDamage(currentComboActionIndex),
                 currentCombo.GetHitName(currentComboActionIndex,hitIndex),
                 currentCombo.GetParryName(currentComboActionIndex,hitIndex),
-                transform,currentEnemy);
+                transform,currentAttackLockTarget);
         }
         else
         {
             //一般攻击状态下，而是其他带有特殊效果的动作
-            GameEventManager.MainInstance.CallEvent<float,Transform>("CalculateDamage",specialAttack.GetComboDamage(specialAttackIndex),currentEnemy);
+            GameEventManager.MainInstance.CallEvent<float,Transform>("CalculateDamage",specialAttack.GetComboDamage(specialAttackIndex),currentAttackLockTarget);
         }
         
     }
@@ -162,7 +184,7 @@ public class PlayerComboControl : MonoBehaviour
                 detectionRange, detectionDirection, out var hitInfo,
                 detectionDistance, 1<<9, QueryTriggerInteraction.Ignore))
         {
-            currentEnemy = hitInfo.transform; 
+            currentAttackLockTarget = hitInfo.transform; 
         }
     }
     
@@ -173,6 +195,76 @@ public class PlayerComboControl : MonoBehaviour
         detectionDirection.Set(detectionDirection.x, 0, detectionDirection.z);
         detectionDirection = detectionDirection.normalized;
     }
+
+    #region 范围检测敌人相关
+    //1.检测以自身为中心，一定范围内的所有敌人，同时取其中距离最近的人
+    //2.在当前玩家没有目标的情况下，取最近的敌人作为当前目标
+    //3.自选:
+    //（1）当前有目标，不再更新目标，直到当前目标消失或者距离太远
+    //（2）当前目标只要大于了一定距离就更新
+    private void GetNearAllAttackUnit()
+    {
+        // if(currentAttackLockTarget != null) return;
+        if(currentAttackLockTarget != null && 
+           DevelopmentToos.DistanceForTarget(currentAttackLockTarget.transform,transform) 
+           < centerDetectionRadius) return;
+        attackUnits =  Physics.OverlapSphere(transform.position + (transform.up * 0.7f),
+            centerDetectionRadius, detectionLayer, QueryTriggerInteraction.Ignore);
+    }
+
+    private void GetOneAttackUnit()
+    {
+        if (attackUnits.Length == 0)
+        {
+            ClearCurrentEnemy();
+            return;
+        }
+        // if(!animator.AnimationAtTag("Attack")) return;
+        if(currentAttackLockTarget != null && 
+           DevelopmentToos.DistanceForTarget(currentAttackLockTarget.transform,transform) 
+           < 1.2f) return;
+        // if(currentAttackLockTarget != null) return;
+        QuickSort(attackUnits,0,attackUnits.Length-1);
+        if (!canFinishAttack)
+        {
+            currentAttackLockTarget = attackUnits[0].transform != null?attackUnits[0].transform:currentAttackLockTarget;
+        }
+        
+        
+        // Transform enemy = null;
+        // int provit = attackUnits.Length/2;
+        // float provitDistance = DevelopmentToos.DistanceForTarget(attackUnits[provit].transform, transform);
+        // // float distance = Mathf.Infinity;//Mathf.Infinity表示无穷大数
+        // for (int i = 0; i < attackUnits.Length; i++)
+        // {
+        //     // float dis = DevelopmentToos.DistanceForTarget(attackUnits[i].transform, transform);
+        //     // if (dis >= provitDistance)
+        //     // {
+        //     //     
+        //     // }
+        //     
+        // }
+    }
+
+
+    /// <summary>
+    /// 清空当前锁定的敌人
+    /// </summary>
+    /// <returns></returns>
+    private void ClearCurrentEnemy()
+    {
+        if(currentAttackLockTarget == null) return;
+        if (animator.GetFloat(AnimationID.MovementID) > 0.7f)
+        {
+            canFinishAttack = false;
+            // currentAttackLockTarget = null;
+        }
+    }
+    
+
+    #endregion
+    
+    
 
     #endregion
     
@@ -314,10 +406,18 @@ public class PlayerComboControl : MonoBehaviour
     private void LookTargetOnAttack()
     {
         
-        if (animator.AnimationAtTag("Attack") && animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 0.5 && currentEnemy != null)
+        if (animator.AnimationAtTag("Attack") && animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 0.3 && currentAttackLockTarget != null)
         {
-            if(Vector3.Distance(transform.position,currentEnemy.position) > 3f) return;
-            transform.Look(currentEnemy.position,500f);
+            if(Vector3.Distance(transform.position,currentAttackLockTarget.position) > 3f) return;
+            Vector3 direction = currentAttackLockTarget.position - transform.position;
+            // transform.Look(currentAttackLockTarget.position,500f);
+            if (direction.magnitude > 0.1f)
+            {
+                Quaternion targetRotation = Quaternion.LookRotation(direction);
+                // 使用插值而不是直接设置，限制旋转速度
+                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 50f);
+            }
+            
             // animator.MatchTarget(currentEnemy.position+(currentEnemy.forward*normalCombo.GetComboPositionOffset(currentComboActionIndex))
             //     ,Quaternion.identity,AvatarTarget.Body,new MatchTargetWeightMask(Vector3.one,0f),0,0.15f);
             // transform.rotation = Quaternion.LookRotation(currentEnemy.position);
@@ -363,6 +463,7 @@ public class PlayerComboControl : MonoBehaviour
     {
         if(animator.AnimationAtTag("Finish")) return false;
         if (currentCombo == null) return false;
+        if (!canFinishAttack) return false;
 
         return true;
     }
@@ -379,11 +480,19 @@ public class PlayerComboControl : MonoBehaviour
             PlayAnimation(specialAttack.GetOneComboAction(specialAttackIndex));
             //执行敌人的特殊攻击受伤逻辑
             GameEventManager.MainInstance.CallEvent<string,string,Transform,Transform>("SpacialAttackHitEvent",specialAttack.GetHitName(specialAttackIndex,0),
-                specialAttack.GetParryName(specialAttackIndex,0),transform,currentEnemy);
+                specialAttack.GetParryName(specialAttackIndex,0),transform,currentAttackLockTarget);
             TimerManager.MainInstance.TryGetOneTimer(0.155f,UpdateComboInfo);
             ResetComboInfo();
         }
     }
+    
+    
+    private void EnableFinishAttack(bool apply)
+    {
+        if (canFinishAttack) return;
+        canFinishAttack = apply;
+    }
+    
     
     
     #endregion
@@ -396,11 +505,11 @@ public class PlayerComboControl : MonoBehaviour
         //2.当前没有目标
         //3.当前正处于暗杀状态下
         //4.角度太太
-        if (currentEnemy == null) return false;
+        if (currentAttackLockTarget == null) return false;
         if(animator.AnimationAtTag("Assassinate")) return false;
         if(animator.AnimationAtTag("Finish")) return false;
-        if (Vector3.Distance(transform.position, currentEnemy.position) > 5f) return false;
-        if (Vector3.Angle(transform.position, currentEnemy.position) > 30f) return false;
+        if (Vector3.Distance(transform.position, currentAttackLockTarget.position) > 5f) return false;
+        if (Vector3.Angle(transform.position, currentAttackLockTarget.position) > 30f) return false;
 
         return true;
     }
@@ -416,7 +525,7 @@ public class PlayerComboControl : MonoBehaviour
             PlayAnimation(assassinateAttack.GetOneComboAction(specialAttackIndex));
             //执行敌人的特殊攻击受伤逻辑
             GameEventManager.MainInstance.CallEvent<string,string,Transform,Transform>("SpacialAttackHitEvent",assassinateAttack.GetHitName(currentComboActionIndex,0),
-                specialAttack.GetParryName(currentComboActionIndex,0),transform,currentEnemy);
+                specialAttack.GetParryName(currentComboActionIndex,0),transform,currentAttackLockTarget);
             TimerManager.MainInstance.TryGetOneTimer(0.5f,UpdateComboInfo);
             ResetComboInfo();
             currentComboActionIndex = 0;
@@ -448,7 +557,48 @@ public class PlayerComboControl : MonoBehaviour
         Gizmos.color = Color.green;
         Gizmos.DrawWireSphere(transform.position + (transform.up * 0.75f)+
                               (detectionDirection*detectionDistance), detectionRange);
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position + (transform.up * 0.75f),centerDetectionRadius);
     }
 
     #endregion
+
+    #region 快速排序函数,实现实时更新敌人距离
+    
+    public void QuickSort(Collider[] array,int leftIndex,int rightIndex)
+    {
+        if (leftIndex >= rightIndex) return;
+        
+        int tempLeftIndex, tempRightIndex;
+        Collider tempValue = array[leftIndex];
+        float benchmarkValue = DevelopmentToos.DistanceForTarget(tempValue.transform,transform);
+        tempLeftIndex = leftIndex;
+        tempRightIndex = rightIndex;
+        while (tempLeftIndex != tempRightIndex)
+        {
+            while (tempLeftIndex < tempRightIndex && 
+                   DevelopmentToos.DistanceForTarget(array[tempRightIndex].transform,transform)>benchmarkValue)
+            {
+                tempRightIndex--;
+            }
+            array[tempLeftIndex] = array[tempRightIndex];
+
+            while (tempLeftIndex < tempRightIndex&& 
+                   DevelopmentToos.DistanceForTarget(array[tempLeftIndex].transform,transform)<benchmarkValue)
+            {
+                tempLeftIndex++;
+            }
+            array[tempRightIndex] = array[tempLeftIndex];
+        }
+        array[tempRightIndex] = tempValue; 
+
+        QuickSort(array,leftIndex,tempLeftIndex-1);
+        QuickSort(array,tempLeftIndex+1,rightIndex);
+        
+    }
+    
+
+    #endregion
+    
+    
 }

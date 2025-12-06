@@ -15,10 +15,8 @@ MonoBehaviour:
   animationName: NormalAttack2
   comboHitName:
   - HitLeft
-  - HitRight
   comboParryName:
-  - ParryRight
-  - ParryRight
+  - LeftParry
   comboDamage: 15
   comboColdTime: 0.8
   comboPositionOffset: 3

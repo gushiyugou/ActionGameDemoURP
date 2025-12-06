@@ -14,11 +14,22 @@ namespace Action_ARPG.Health
         protected Transform currentAttacker;
         protected Animator animator;
 
-        [SerializeField, Header("体力值")] protected float enduranceValue;
+        [SerializeField,Header("角色健康信息")] protected CharacterHealthInfo_SO healthInfo;
+        
 
         protected virtual void Awake()
         {
             animator = GetComponent<Animator>();
+        }
+
+        private void Start()
+        {
+            if (healthInfo == null)
+            {
+                Debug.LogError($"{gameObject.name}没有初始化HealthInfo，请赋值检查");
+                return;
+            }
+            healthInfo.InitCharacterHealthInfo();
         }
 
         protected virtual void OnEnable()
@@ -59,7 +70,7 @@ namespace Action_ARPG.Health
 
         protected void TakeDamage(float damage)
         {
-            
+            healthInfo.DamageToHP(damage);
         }
 
         protected void SpacialAttackTakeDamage(float damage, Transform self)
@@ -83,11 +94,12 @@ namespace Action_ARPG.Health
         private void OnHitLookAttacker()
         {
             if(currentAttacker == null )return;
-            if ((animator.AnimationAtTag("Hit") || animator.AnimationAtTag("Parry")) &&
-                animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 0.5f)
-            {
-                transform.Look(currentAttacker.position,50f);
-            }
+            // if ((animator.AnimationAtTag("Hit") || animator.AnimationAtTag("Parry")) &&
+            //     animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 0.5f)
+            // {
+            //     transform.Look(currentAttacker.position,50f);
+            //     
+            // }
         }
 
         #region 受伤事件
@@ -95,21 +107,22 @@ namespace Action_ARPG.Health
             Transform self)
         {
             if(self != transform) return;
-
             
             SetAttacker(attacker);
             CharacterHitAction(damage,hitName, parryName);
-            TakeDamage(damage);
+            
         }
         
         private void SpacialAttackHitEventHandler(string hitName, string parryName, Transform attacker,
             Transform self)
         {
-            SetAttacker(attacker);
-            // SpacialAttackHitAction(damage,hitName, parryName);
-            animator.Play(hitName);
-            // SpacialAttackTakeDamage(damage);
-            
+            if (self == transform)
+            {
+                SetAttacker(attacker);
+                // SpacialAttackHitAction(damage,hitName, parryName);
+                animator.Play(hitName,-1,0f);
+                // SpacialAttackTakeDamage(damage);
+            }
         }
          
         #endregion

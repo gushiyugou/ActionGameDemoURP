@@ -14,12 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   animationName: NormalAttack3
   comboHitName:
-  - HitLeft
+  - HitRight
   - HitRight
   comboParryName:
-  - ParryLeft
-  - ParryRight
-  comboDamage: 15
+  - RightParry
+  - RightParry
+  comboDamage: 16
   comboColdTime: 0.6
   comboPositionOffset: 0.8
   endAnimationName: 

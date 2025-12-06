@@ -4722,14 +4722,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2868173764748309996}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071067}
+  m_LocalRotation: {x: -0.7069834, y: 0, z: 0, w: 0.7072302}
   m_LocalPosition: {x: -0, y: 0, z: 0}
   m_LocalScale: {x: 100, y: 100, z: 100}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2400754670974749732}
   m_Father: {fileID: 2745602662530449290}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -89.98, y: 0, z: 0}
 --- !u!1 &2878397250352206739
 GameObject:
   m_ObjectHideFlags: 0
@@ -9550,7 +9550,7 @@ GameObject:
   - component: {fileID: 7751090159031444547}
   m_Layer: 8
   m_Name: GeWen
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -9638,7 +9638,7 @@ MonoBehaviour:
   _whatIsGround:
     serializedVersion: 2
     m_Bits: 192
-  _smoothDampTime: 0.3
+  _smoothDampTime: 0.08
   _slowFootTime: 0.4
   _fastFootTime: 0.3
 --- !u!114 &3567857507735253772
@@ -9672,10 +9672,16 @@ MonoBehaviour:
   normalCombo: {fileID: 11400000, guid: 755f8bc0da2610748b1191befcbb7f76, type: 2}
   intensifiedAttack: {fileID: 11400000, guid: ab93a4720e5924a4bb728fc3256a0c9c, type: 2}
   specialAttack: {fileID: 11400000, guid: 72077bec2c46a504c8e0a71d7c6e5688, type: 2}
+  assassinateAttack: {fileID: 11400000, guid: 066c92eb517717144bbc9f08e096ce9b, type: 2}
   rotationVelocity: 5
+  rotationModel: {fileID: 2423025283585413795}
   canChangeState: 0
   detectionRange: 1
   detectionDistance: 3
+  centerDetectionRadius: 4
+  detectionLayer:
+    serializedVersion: 2
+    m_Bits: 512
 --- !u!114 &7751090159031444547
 MonoBehaviour:
   m_ObjectHideFlags: 0

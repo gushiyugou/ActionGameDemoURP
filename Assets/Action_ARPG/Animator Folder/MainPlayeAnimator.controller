@@ -291,7 +291,7 @@ BlendTree:
       type: 3}
     m_Threshold: 1
     m_Position: {x: 0, y: 0}
-    m_TimeScale: 1.2
+    m_TimeScale: 1
     m_CycleOffset: 0
     m_DirectBlendParameter: Movement
     m_Mirror: 0
@@ -300,7 +300,7 @@ BlendTree:
       type: 3}
     m_Threshold: 2
     m_Position: {x: 0, y: 0}
-    m_TimeScale: 1.2
+    m_TimeScale: 1
     m_CycleOffset: 0
     m_DirectBlendParameter: Movement
     m_Mirror: 0
@@ -532,7 +532,7 @@ AnimatorStateTransition:
     m_EventTreshold: 0
   - m_ConditionMode: 4
     m_ConditionEvent: DetlaAngle
-    m_EventTreshold: -110
+    m_EventTreshold: -135
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 2138916052523659899}
   m_Solo: 0
@@ -1301,7 +1301,7 @@ AnimatorStateTransition:
     m_EventTreshold: 0
   - m_ConditionMode: 3
     m_ConditionEvent: DetlaAngle
-    m_EventTreshold: 110
+    m_EventTreshold: 135
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: -7116081316550781995}
   m_Solo: 0

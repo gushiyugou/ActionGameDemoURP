@@ -14,12 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   animationName: NormalAttack1
   comboHitName:
-  - HitLeft
   - HitRight
   comboParryName:
-  - ParryLeft
-  - ParryRight
-  comboDamage: 15
+  - LeftDownParry
+  comboDamage: 20
   comboColdTime: 0.6
   comboPositionOffset: 3
   endAnimationName: 

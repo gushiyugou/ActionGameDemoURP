@@ -11,16 +11,16 @@ namespace Action_ARPG.Movement
     {
         private float _rotationAngle;
         private float _rotationVelocity = 0f;
-        [Header("旋转平滑时间")]
+        [Header("平滑时间")]
         [SerializeField]private float _smoothDampTime;
         private Transform _mainCamera;
         
-        //脚步声
+        //脚步相关
         private float _nextFootTime;
         [SerializeField] private float _slowFootTime;
         [SerializeField] private float _fastFootTime;
         
-        //角色的目标朝向
+        //角色旋转方向
         private Vector3 _characterTargetDirectiuon;
 
         protected override void Awake()
@@ -48,9 +48,14 @@ namespace Action_ARPG.Movement
 
             if (_animator.GetBool(AnimationID.HasInputID) && _animator.AnimationAtTag("motion"))
             {
+                DevelopmentToos.WTF($"{_animator.GetFloat(AnimationID.DeltaAngleID)}");
+                if(_animator.GetFloat(AnimationID.DeltaAngleID)<-180f) return;
+                if(_animator.GetFloat(AnimationID.DeltaAngleID)>180f) return;
+                
                 transform.eulerAngles = Vector3.up * Mathf.SmoothDampAngle(transform.eulerAngles.y,
                     _rotationAngle,ref _rotationVelocity,_smoothDampTime);
                 _characterTargetDirectiuon = Quaternion.Euler(0, _rotationAngle, 0) * Vector3.forward;
+                
             }
             _animator.SetFloat(AnimationID.DeltaAngleID,DevelopmentToos.GetDeltaAngle(transform,_characterTargetDirectiuon.normalized));
         }
@@ -65,13 +70,13 @@ namespace Action_ARPG.Movement
         }
 
 
-        #region 动画相关
+        #region 鍔ㄧ敾鐩稿叧
 
         private void UpdateAnimation()
         {
             if (!_characterOnGround)
             {
-                //根据需要来调整
+                //根据需求决定是否在空中也播放移动动画
                 // _animator.SetBool("HasInput", false);
                 return;
             }
